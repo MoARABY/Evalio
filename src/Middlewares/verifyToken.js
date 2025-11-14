@@ -29,11 +29,28 @@ const verifyToken = async (req, res, next) => {
             return res.status(401).json({status:'fail',msg:'User recently changed password, please login again'})
         }
 
-        req.user = decoded;
+        req.user = user;
         next();
     } catch (error) {
-        return res.status(401).json({ status: 'fail', msg: 'Invalid signature.' });
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({ status: 'fail', msg: 'Token expired.' });
+        }
+        return res.status(401).json({ status: 'fail', msg: 'Invalid token.' });
     }
 }
 
-module.exports = verifyToken;
+
+const allowedTo = (...roles)=>{
+    return (req,res,next)=>{
+
+        // nested verify token middleware
+        verifyToken(req,res,()=>{
+            if(!roles.includes(req.user.role)){
+                return res.status(403).json({status:'fail',msg:'you are not authorized!'})
+            }
+            next()
+        })
+    }
+}
+
+module.exports = {verifyToken,allowedTo};

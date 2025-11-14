@@ -30,7 +30,8 @@ const updateUser = asyncHandler(async (req, res) => {
     {
         username: req.body.username,
         email:req.body.email,
-        phone:req.body.phone
+        phone:req.body.phone,
+        role:req.body.role
     }, 
         { new: true , runValidators: true }
     );
