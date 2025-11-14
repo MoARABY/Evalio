@@ -41,6 +41,7 @@ const updateUserPassword = asyncHandler(async (req, res) => {
     const {id} = req.params;
     const user = await userModel.findById(id);
     user.password = req.body.password;
+    user.passwordChangedAt = Date.now();
     await user.save();
     res.status(200).json({ message: "Password updated successfully" });
 })
