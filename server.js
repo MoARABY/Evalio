@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
 //     res.status(404).json({status:'fail',msg:'page not found'})
 // })
 app.use((req, res, next )=>{
-    res.status(404).json({status:'fail',msg:`Can't find ${req.originalUrl} on this server`})
+    res.status(404).json({status:'fail',msg:`Page ${req.originalUrl} not found on this server`})
 })
 app.use(errorMiddleware)
 

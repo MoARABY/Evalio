@@ -19,6 +19,9 @@ const login = asyncHandler(async (req, res) => {
     if(!user || ! await bcrypt.compare(password,user.password)) {
         return res.status(400).json('Invalid email or password')
     }
+    if(!user.isActive) {
+        return res.status(403).json({status:'fail',msg:'you are suspended please call the admin'})
+    }
     const token = jwt.sign({ id: user._id}, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
     return res.cookie('authorization', token, { httpOnly: true }).status(200).json({ message: 'Login successful', user });
 })

@@ -24,10 +24,11 @@ const verifyToken = async (req, res, next) => {
         if(!user) return res.status(401).json({status:'fail',msg:'the user belonging to this token no longer exist'})
 
         // check if user changed his password after the token was issued
-        console.log(user.passwordChangedAt);
         if(user.passwordChangedAt && decoded.iat < +(user.passwordChangedAt.getTime()/1000)){
             return res.status(401).json({status:'fail',msg:'User recently changed password, please login again'})
         }
+
+        if (!user.isActive) return res.status(403).json({status:'fail', msg: 'Account suspended' });
 
         req.user = user;
         next();

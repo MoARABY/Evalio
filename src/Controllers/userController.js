@@ -47,10 +47,22 @@ const updateUserPassword = asyncHandler(async (req, res) => {
     res.status(200).json({ message: "Password updated successfully" });
 })
 
-const deleteUser = asyncHandler(async (req, res) => {
+const withdrawUser = asyncHandler(async (req, res) => {
     const {id} = req.params;
     await userModel.findByIdAndDelete(id);
-    res.status(200).json({ message: "User deleted successfully" });
+    res.status(200).json({ message: "User withdrawn successfully" });
+})
+
+const suspendUser = asyncHandler(async (req, res) => {
+    const {id} = req.params
+    await userModel.findByIdAndUpdate(id,{isActive:false})
+    res.status(200).json({ message: "User suspended successfully" });
+})
+
+const unsuspendUser = asyncHandler(async (req, res) => {
+    const {id} = req.params
+    await userModel.findByIdAndUpdate(id,{isActive:true})
+    res.status(200).json({ message: "User unSuspended successfully" });
 })
 
 module.exports = {
@@ -59,5 +71,7 @@ module.exports = {
     getUserById,
     updateUser,
     updateUserPassword,
-    deleteUser
+    withdrawUser,
+    suspendUser,
+    unsuspendUser
 }
