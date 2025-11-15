@@ -54,7 +54,6 @@ const changeLoggedUserPassword = asyncHandler(async (req, res) => {
 });
 
 // build forgot password logic
-
 const forgotPassword = asyncHandler(async(req,res)=>{
     const {email} = req.body
 
@@ -90,6 +89,33 @@ const forgotPassword = asyncHandler(async(req,res)=>{
     res.status(200).json({ msg: 'Password reset code sent to email' });
 })
 
+const verifyResetCode = asyncHandler(async (req,res)=>{
+    const {resetCode} = req.body
+    const hashedCode = crypto.createHash('sha256').update(resetCode).digest('hex')
+
+    const user = await userModel.findOne({passwordResetCode:hashedCode,passwordResetCodeExpires:{$gt:Date.now()}})
+    if(!user) return res.status(404).json('Code Expired or Invalid')
+
+    user.passwordResetCodeVerified = true
+    await user.save()
+    res.status(200).json({status:'Success',message:'Code Verified'})
+})
+
+const resetPassword = asyncHandler(async(req,res)=>{
+    const {email,password} = req.body
+    const user = await userModel.findOne({email})
+    if(!user) return res.status(404).json(`There is no user with email ${email}`)
+    if(!user.passwordResetCodeVerified) return res.status(400).json('your code is not verified')
+    user.password = password
+    user.passwordResetCode = undefined
+    user.passwordResetCodeExpires = undefined
+    user.passwordResetCodeVerified = undefined
+    user.passwordChangedAt = Date.now();
+    await user.save()
+    const {password:pass,...others} = user._doc
+    res.status(200).json({status:'Success',message:'Password Reset Successful',others})
+})
+
 
 module.exports = {
     signup,
@@ -98,5 +124,7 @@ module.exports = {
     loggedUserProfile,
     updateLoggedUser,
     changeLoggedUserPassword,
-    forgotPassword
+    forgotPassword,
+    verifyResetCode,
+    resetPassword
 }
