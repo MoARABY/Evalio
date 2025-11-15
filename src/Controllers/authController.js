@@ -1,7 +1,9 @@
 const userModel = require('../../DB/Models/userModel');
+const sendEmails = require('../Utils/sendEmails')
 const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto')
 
 
 const signup = asyncHandler(async (req, res) => {
@@ -51,6 +53,42 @@ const changeLoggedUserPassword = asyncHandler(async (req, res) => {
     res.status(200).json({ msg: 'password updated successfully' });
 });
 
+// build forgot password logic
+
+const forgotPassword = asyncHandler(async(req,res)=>{
+    const {email} = req.body
+
+    // check if email is valid
+    const user = await userModel.findOne({email})
+    if(!user) return res.status(400).json({status:'fail',msg:'invalid user Email'})
+    
+    // generate random resetCode
+    const resetCode = Math.floor(100000 + Math. random() * 900000).toString()
+    // hash resetCode
+    const HashedRestCode =  crypto.createHash('sha256').update(resetCode).digest('hex')
+    user.passwordResetCode = HashedRestCode;
+    user.passwordResetCodeExpires = Date.now() + 1000 * 60 * 10; // expires in 10 minutes
+    user.passwordResetCodeVerified = false
+    await user.save()
+    // send Emails By Nodemailer
+    try {
+        const message = `Hi ${user.username},\n\nwe received a request to reset your password.\nYour password reset code is ${resetCode}. \nIf you did not request this, please ignore this email.`
+        await sendEmails({
+            // email:user.email,
+            email:'devscommunity13@gmail.com',
+            subject:'Password Reset Token',
+            message
+        })
+    } catch (error) {
+        user.passwordResetCode = undefined;
+        user.passwordResetCodeExpires = undefined;
+        user.passwordResetCodeVerified = undefined;
+        await user.save();
+        return res.status(500).json({ msg: 'Error sending email', error: error.message });
+    }
+
+    res.status(200).json({ msg: 'Password reset code sent to email' });
+})
 
 
 module.exports = {
@@ -59,5 +97,6 @@ module.exports = {
     logout,
     loggedUserProfile,
     updateLoggedUser,
-    changeLoggedUserPassword
+    changeLoggedUserPassword,
+    forgotPassword
 }
