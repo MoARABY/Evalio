@@ -21,9 +21,43 @@ const login = asyncHandler(async (req, res) => {
     return res.cookie('authorization', token, { httpOnly: true }).status(200).json({ message: 'Login successful', user });
 })
 
+const logout = asyncHandler(async (req, res) => {
+    res.clearCookie('authorization').status(200).json({ msg: 'logged out successfully' });
+});
+
+const loggedUserProfile = asyncHandler(async (req, res) => {
+    const user = await userModel.findById(req.user._id);
+    user ? res.status(200).json({ msg: 'user profile', user }) : res.status(404).json({ msg: 'user not found' });
+})
+
+const updateLoggedUser = asyncHandler(async(req,res)=>{
+    const id = req.user._id;
+    const user = await userModel.findByIdAndUpdate(id,
+    {
+        username:req.body.username,
+        email:req.body.email,
+        phone:req.body.phone,
+        role:req.body.role
+    },{new:true})
+    user ? res.status(200).json({msg:'user updated successfully',user}) : res.status(404).json({msg:'user not found'})
+})
+
+const changeLoggedUserPassword = asyncHandler(async (req, res) => {
+    const {password } = req.body;
+    const user = await userModel.findById(req.user._id);
+    user.password = password;
+    user.passwordChangedAt = Date.now();
+    await user.save();
+    res.status(200).json({ msg: 'password updated successfully' });
+});
+
 
 
 module.exports = {
     signup,
-    login
+    login,
+    logout,
+    loggedUserProfile,
+    updateLoggedUser,
+    changeLoggedUserPassword
 }

@@ -78,7 +78,29 @@ check('confirmPassword').notEmpty().withMessage('Please provide a confirm passwo
     return true
 })
 
-,validatorMiddleware]
+,validatorMiddleware
+]
+
+const changeLoggedUserPasswordValidator = [
+check('currentPassword').notEmpty().withMessage('Old password is required')
+.custom(async (val,{req})=>{
+    const user = await userModel.findById(req.user._id);
+    if(!user) throw new Error('User not found')
+        console.log(user);
+    const compare = await bcrypt.compare(val, user.password);
+    if(!compare) throw new Error('Old password is incorrect')
+    return true
+}),
+
+check('password').notEmpty().withMessage('New password is required')
+.isLength({ min: 6 }).withMessage('New password must be at least 6 characters long'),
+check('confirmPassword').notEmpty().withMessage('Please provide a confirm password')
+.custom((val,{req})=>{
+    if(val !== req.body.password) throw new Error('Password and confirm password do not match')
+    return true
+})
+,validatorMiddleware
+]
 
 const UserIdValidator = [
     check('id').isMongoId().withMessage('Invalid user ID format')
@@ -98,5 +120,6 @@ module.exports = {
     createUserValidator,
     updateUserValidator,
     changePasswordValidator,
-    UserIdValidator
+    UserIdValidator,
+    changeLoggedUserPasswordValidator
 }
