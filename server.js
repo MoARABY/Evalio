@@ -14,11 +14,11 @@ app.use(morgan('dev'))
 // calling system middlewares
 const dbConnection = require('./DB/DBconfig')
 const errorMiddleware = require('./src/Middlewares/errorMiddleware')
-const AppError = require('./src/Utils/appError')
 const userRoutes = require('./src/Routes/userRoutes')
 const authRoutes = require('./src/Routes/authRoute')
 const academicYearRoute = require('./src/Routes/academicYearRoute')
 const academicTermRoute = require('./src/Routes/academicTermRoute')
+const subjectRoute = require('./src/Routes/subjectRoute')
 
 
 // Routes Mounting
@@ -26,8 +26,10 @@ app.use('/api/v1/users', userRoutes)
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/academic-years', academicYearRoute)
 app.use('/api/v1/academic-terms', academicTermRoute)
+app.use('/api/v1/subjects', subjectRoute)
 
 
+// Testing Route
 app.get('/api/v1', (req, res) => {
     res.status(200).json({ message: "Welcome to Evalio APIs v1" })
 })
@@ -35,11 +37,7 @@ app.get('/', (req, res) => {
     res.status(200).json("APIs Runs Well")
 })
 
-// Error Middleware
-
-// app.all('*',(req,res)=>{
-//     res.status(404).json({status:'fail',msg:'page not found'})
-// })
+// Error Middlewares
 app.use((req, res, next )=>{
     res.status(404).json({status:'fail',msg:`Page ${req.originalUrl} not found on this server`})
 })
