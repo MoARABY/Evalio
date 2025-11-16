@@ -21,6 +21,7 @@ const createAcademicTerm = asyncHandler (async (req, res) => {
     newAcademicTerm ? res.status(201).json({ status: 'success', data: newAcademicTerm }): res.status(400).json({ status: 'fail', msg: 'Failed to create academic Term' });
 })
 
+
 const getAcademicTerms = asyncHandler (async (req, res ) => {
     const academicTerms = await academicTermModel.find().populate({ path: 'academicYear', select: 'name' });
     academicTerms.length > 0 ?res.status(200).json({ status: 'success', results: academicTerms.length, data: academicTerms }) : res.status(404).json({ status: 'fail', msg: 'No Academic Terms found' });

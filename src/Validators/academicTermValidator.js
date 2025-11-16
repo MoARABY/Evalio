@@ -47,7 +47,6 @@ updateAcademicTermValidator = [
     ,validatorMiddleware
 ]
 
-
 academicTermIdValidator = [
     check('id')
         .isMongoId().withMessage('Invalid Academic Term ID')
@@ -59,10 +58,15 @@ academicTermIdValidator = [
     ,validatorMiddleware
 ]
 
+setAcademicYearIdValue = (req,res,next) => {
+    if(!req.body.academicYear) req.body.academicYear = req.params.academicYearId
+    next()
+}
 
 
 module.exports = {
     createAcademicTermValidator,
     updateAcademicTermValidator,
-    academicTermIdValidator
+    academicTermIdValidator,
+    setAcademicYearIdValue
 }

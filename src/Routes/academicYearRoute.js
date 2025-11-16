@@ -1,9 +1,13 @@
 const {createAcademicYear,getAcademicYears,getAcademicYearById,updateAcademicYearById,asscociateYearAdmin,deleteAcademicYearById} = require('../Controllers/academicYearController')
 const {createAcademicYearValidator,updateAcademicYearValidator,academicYearIdValidator} = require('../Validators/academicYearValidator')    
 const {verifyToken,allowedTo} = require('../Middlewares/verifyToken')
-const router = require('express').Router() 
+const router = require('express').Router()
+
+const academicTermRoute = require('./academicTermRoute')
 
 
+
+router.use('/:academicYearId/academic-terms', academicTermRoute)
 
 router.route('/')
     .post(allowedTo('admin'),createAcademicYearValidator, createAcademicYear)
