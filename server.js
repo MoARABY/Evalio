@@ -18,12 +18,14 @@ const AppError = require('./src/Utils/appError')
 const userRoutes = require('./src/Routes/userRoutes')
 const authRoutes = require('./src/Routes/authRoute')
 const academicYearRoute = require('./src/Routes/academicYearRoute')
+const academicTermRoute = require('./src/Routes/academicTermRoute')
 
 
 // Routes Mounting
 app.use('/api/v1/users', userRoutes)
 app.use('/api/v1/auth', authRoutes)
-app.use('/api/v1/academicYears', academicYearRoute)
+app.use('/api/v1/academic-years', academicYearRoute)
+app.use('/api/v1/academic-terms', academicTermRoute)
 
 
 app.get('/api/v1', (req, res) => {

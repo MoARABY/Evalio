@@ -2,7 +2,6 @@ const {check} = require('express-validator')
 const academicYearModel = require('../../DB/Models/academicYearModel')
 const userModel = require('../../DB/Models/userModel')
 const validatorMiddleware = require('../Middlewares/validatorMiddleware')
-const { updateAcademicYearById } = require('../Controllers/academicYearController')
 
 
 
@@ -49,7 +48,6 @@ updateAcademicYearValidator = [
         })
     ,validatorMiddleware
 ]
-        
 
 academicYearIdValidator = [
     check('id')
