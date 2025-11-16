@@ -4,10 +4,9 @@ const {allowedTo} = require('../Middlewares/verifyToken')
 const router = require('express').Router()
 
 // no verify token in get all users controller to check if token logic work
-router.route('/').get(getAllUsers).post(allowedTo('Admin'), createUserValidator, createUser)
-router.route('/:id').get(allowedTo('Admin'), UserIdValidator, getUserById).put(allowedTo('Admin'), UserIdValidator, updateUserValidator, updateUser).delete(allowedTo('Admin'), UserIdValidator, withdrawUser)
-router.route('/:id/password').put(allowedTo('Admin'), UserIdValidator, changePasswordValidator, updateUserPassword)
-router.route('/:id/suspend').put(allowedTo('Admin'), UserIdValidator, suspendUser)
-router.route('/:id/unsuspend').put(allowedTo('Admin'), UserIdValidator, unsuspendUser)
-
+router.route('/').get(getAllUsers).post(allowedTo('admin'), createUserValidator, createUser)
+router.route('/:id').get(allowedTo('admin'), UserIdValidator, getUserById).put(allowedTo('admin'), UserIdValidator, updateUserValidator, updateUser).delete(allowedTo('admin'), UserIdValidator, withdrawUser)
+router.route('/:id/password').put(allowedTo('admin'), UserIdValidator, changePasswordValidator, updateUserPassword)
+router.route('/:id/suspend').put(allowedTo('admin'), UserIdValidator, suspendUser)
+router.route('/:id/unsuspend').put(allowedTo('admin'), UserIdValidator, unsuspendUser)
 module.exports = router 

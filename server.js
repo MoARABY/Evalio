@@ -17,11 +17,15 @@ const errorMiddleware = require('./src/Middlewares/errorMiddleware')
 const AppError = require('./src/Utils/appError')
 const userRoutes = require('./src/Routes/userRoutes')
 const authRoutes = require('./src/Routes/authRoute')
+const academicYearRoute = require('./src/Routes/academicYearRoute')
 
 
-// Routes Middleware
+// Routes Mounting
 app.use('/api/v1/users', userRoutes)
 app.use('/api/v1/auth', authRoutes)
+app.use('/api/v1/academicYears', academicYearRoute)
+
+
 app.get('/api/v1', (req, res) => {
     res.status(200).json({ message: "Welcome to Evalio APIs v1" })
 })
