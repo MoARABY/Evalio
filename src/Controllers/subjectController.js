@@ -17,7 +17,7 @@ const createSubject = asyncHandler (async (req, res) => {
 })
 
 const getSubjects = asyncHandler (async (req, res) => {
-    const subjects = await subjectModel.find().populate({path:'academicTerm',select:'name year'}).populate({path:'createdBy',select:'name email'})
+    const subjects = await subjectModel.find().populate({path:'academicTerm',select:'name year'}).populate({path:'createdBy',select:'username email'})
     if(subjects.length ===0){
         return res.status(404).json({ status: 'fail', message: 'No subjects found' })
     }

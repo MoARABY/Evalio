@@ -11,7 +11,7 @@ app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
 app.use(morgan('dev'))
 
-// calling system middlewares
+// calling system routes
 const dbConnection = require('./DB/DBconfig')
 const errorMiddleware = require('./src/Middlewares/errorMiddleware')
 const userRoutes = require('./src/Routes/userRoutes')
@@ -19,6 +19,7 @@ const authRoutes = require('./src/Routes/authRoute')
 const academicYearRoute = require('./src/Routes/academicYearRoute')
 const academicTermRoute = require('./src/Routes/academicTermRoute')
 const subjectRoute = require('./src/Routes/subjectRoute')
+const classLevelRoute = require('./src/Routes/classLevelRoute')
 
 
 // Routes Mounting
@@ -27,6 +28,7 @@ app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/academic-years', academicYearRoute)
 app.use('/api/v1/academic-terms', academicTermRoute)
 app.use('/api/v1/subjects', subjectRoute)
+app.use('/api/v1/class-levels', classLevelRoute)
 
 
 // Testing Route
