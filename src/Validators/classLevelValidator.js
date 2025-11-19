@@ -9,11 +9,19 @@ createClassValidator = [
     check('name')
         .notEmpty().withMessage('Class Level name is required')
         .custom(async (value) => {
-            const classLevel = await classLevelModel.findOne({name: value})
+            const classLevel = await classLevelModel.findOne({name: value,program:req.body.program})
             if (classLevel) {
                 throw new Error('Class Level name already exists')
             }
             return true
+        }),
+    check('program')
+        .notEmpty().withMessage('Program ID is required')
+        .isMongoId().withMessage('Invalid Program ID')
+        .custom(async (value) => {
+            const program = await programModel.findById(value);
+            if (!program) throw new Error('Program not found');
+            return true;
         }),
     check('subjects')
         .optional()
@@ -42,11 +50,19 @@ updateClassValidator = [
     check('name')
         .optional()
         .custom(async (value,{req}) => {
-            const classLevel = await classLevelModel.findOne({name: value})
+            const classLevel = await classLevelModel.findOne({name: value,program:req.body.program})
             if (classLevel && classLevel._id.toString() !== req.params.id) {
                 throw new Error('Class Level name already exists')
             }
             return true
+        }),
+    check('program')
+        .optional()
+        .isMongoId().withMessage('Invalid Program ID')
+        .custom(async (value) => {
+            const program = await programModel.findById(value)
+            if (!program) throw new Error('Program not found')
+            return true;
         }),
     check('subjects')
         .optional()

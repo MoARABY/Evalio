@@ -33,10 +33,10 @@ const getClassLevelById = asyncHandler (async (req, res) => {
 
 const updateClassLevel = asyncHandler (async (req, res) => {
     const {id} = req.params
-    const {name,description} = req.body
+    const {name,description,program} = req.body
 
     const classLevel = await classLevelModel.findByIdAndUpdate(id,
-        {name,description},{new:true,runValidators:true})
+        {name,description,program},{new:true,runValidators:true})
     classLevel ? res.status(200).json({status:"success",msg:"Class Level Updated",classLevel}):res.status(404).json({status:"fail",msg:`No Class Level Found for this id: ${id}`})
 })
 const addSubjectsToClassLevel = asyncHandler (async (req, res) => {

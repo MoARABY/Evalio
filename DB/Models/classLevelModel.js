@@ -9,6 +9,11 @@ const classLevelSchema = new mongoose.Schema({
     description: { 
         type: String
     },
+    program: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Program',
+        required: true
+    },
     subjects: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Subject',

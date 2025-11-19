@@ -20,6 +20,7 @@ const academicYearRoute = require('./src/Routes/academicYearRoute')
 const academicTermRoute = require('./src/Routes/academicTermRoute')
 const subjectRoute = require('./src/Routes/subjectRoute')
 const classLevelRoute = require('./src/Routes/classLevelRoute')
+const programRoute = require('./src/Routes/programRoute')
 
 
 // Routes Mounting
@@ -29,6 +30,8 @@ app.use('/api/v1/academic-years', academicYearRoute)
 app.use('/api/v1/academic-terms', academicTermRoute)
 app.use('/api/v1/subjects', subjectRoute)
 app.use('/api/v1/class-levels', classLevelRoute)
+app.use('/api/v1/programs', programRoute)
+
 
 
 // Testing Route
