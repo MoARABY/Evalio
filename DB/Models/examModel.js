@@ -41,14 +41,20 @@ const examSchema = new mongoose.Schema({
 }, { timestamps: true })
 
 
+examSchema.set('toJSON', { virtuals: true })
+examSchema.set('toObject', { virtuals: true })
+
 examSchema.virtual('questions', {
     ref: 'Question',
     localField: '_id',
     foreignField: 'exam'
 })
 
-examSchema.set('toJSON', { virtuals: true });
-examSchema.set('toObject', { virtuals: true });
 
+examSchema.post('findOne', async function (doc, next) {
+    if (!doc) return next();
+    await doc.populate({path: 'questions', select: 'text questionType'})
+    next();
+})
 
 module.exports = mongoose.model('Exam', examSchema);
