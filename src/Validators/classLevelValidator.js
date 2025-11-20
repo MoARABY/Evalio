@@ -2,6 +2,7 @@ const {check} = require('express-validator')
 const classLevelModel = require('../../DB/Models/classLevelModel')
 const subjectModel = require('../../DB/Models/subjectModel')
 const userModel = require('../../DB/Models/userModel')
+const programModel = require('../../DB/Models/programModel')
 const validatorMiddleware = require('../Middlewares/validatorMiddleware')
 
 
