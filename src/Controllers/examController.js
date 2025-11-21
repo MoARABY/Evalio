@@ -26,7 +26,7 @@ const createExam = asyncHandler (async (req, res) => {
 })
 
 const getExams = asyncHandler (async (req, res) => {
-    const exams = await examModel.find().populate({path :'createdBy',select:'username email'}).populate({path:'subject',select:'name code'}).populate({path:'classLevel',populate:{path:'program', model: 'Program',select:'name'},select:'name code'}).populate({path:'academicYear',select:'name startYear endYear'})         
+    const exams = await examModel.find().populate({path :'createdBy',select:'username email'}).populate({path:'subject',select:'name code'}).populate({path:'classLevel',populate:{path:'program', model: 'Program',select:'name'},select:'name code'}).populate({path:'academicYear',select:'name startYear endYear'}).populate({path: 'questions', select: 'text questionType options marks'})      
     if(exams.length === 0){
         return res.status(404).json({status:"fail",msg:"No Exams Found",exams})
     }
@@ -35,7 +35,7 @@ const getExams = asyncHandler (async (req, res) => {
 
 const getExamById = asyncHandler (async (req, res) => {
     const {id} = req.params
-    const exam = await examModel.findById(id).populate({path :'createdBy',select:'username email'}).populate({path:'subject',select:'name code'}).populate({path:'classLevel',populate:{path:'program', model: 'Program',select:'name'},select:'name code'}).populate({path:'academicYear',select:'name startYear endYear'})
+    const exam = await examModel.findById(id).populate({path :'createdBy',select:'username email'}).populate({path:'subject',select:'name code'}).populate({path:'classLevel',populate:{path:'program', model: 'Program',select:'name'},select:'name code'}).populate({path:'academicYear',select:'name startYear endYear'}).populate({path: 'questions', select: 'text questionType options marks'})   
     if(!exam){
         return res.status(404).json({status:"fail",msg:`No exam Found for this id: ${id}`})
     }

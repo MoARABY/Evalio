@@ -32,8 +32,9 @@ const examSchema = new mongoose.Schema({
     examDate: { type: Date, required: [true, 'Exam Date is required'] },
     duration: { type: String, required: [true, 'Duration is required'] },
     totalMarks: { type: Number, required: [true, 'Total Marks is required'] },
-    passMarks: { type: Number, required: [true, 'Pass Marks is required'] },
+    passMark: { type: Number, required: [true, 'Pass Marks is required'] },
     isPublished: { type: Boolean, default: false },
+    maxAttempts: { type: Number, default: 1 },
     // questions: [{
     //     type: mongoose.Schema.Types.ObjectId,
     //     ref: 'Question',
@@ -51,10 +52,10 @@ examSchema.virtual('questions', {
 })
 
 
-examSchema.post('findOne', async function (doc, next) {
-    if (!doc) return next();
-    await doc.populate({path: 'questions', select: 'text questionType'})
-    next();
-})
+// examSchema.post('findOne', async function (doc, next) {
+//     if (!doc) return next();
+//     await doc.populate({path: 'questions', select: 'text questionType options marks'})
+//     next();
+// })
 
 module.exports = mongoose.model('Exam', examSchema);
