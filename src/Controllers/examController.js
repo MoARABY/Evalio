@@ -1,6 +1,7 @@
 const examModel = require('../../DB/Models/examModel')
 const userModel = require('../../DB/Models/userModel')
 const asyncHandler = require('express-async-handler')
+const apiFeatures = require('../Utils/appFeatures')
 
 
 const createExam = asyncHandler (async (req, res) => {
@@ -26,7 +27,16 @@ const createExam = asyncHandler (async (req, res) => {
 })
 
 const getExams = asyncHandler (async (req, res) => {
-    const exams = await examModel.find().populate({path :'createdBy',select:'username email'}).populate({path:'subject',select:'name code'}).populate({path:'classLevel',populate:{path:'program', model: 'Program',select:'name'},select:'name code'}).populate({path:'academicYear',select:'name startYear endYear'}).populate({path: 'questions', select: 'text questionType options marks'})      
+    const mongooseQuery = examModel.find()
+    const features = new apiFeatures(req.query, mongooseQuery)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate()
+    .search('examModel')
+
+    const exams = await features.mongooseQuery.populate({path :'createdBy',select:'username email'}).populate({path:'subject',select:'name code'}).populate({path:'classLevel',populate:{path:'program', model: 'Program',select:'name'},select:'name code'}).populate({path:'academicYear',select:'name startYear endYear'}).populate({path: 'questions', select: 'text questionType options marks'})  
+    // const exams = await examModel.find().populate({path :'createdBy',select:'username email'}).populate({path:'subject',select:'name code'}).populate({path:'classLevel',populate:{path:'program', model: 'Program',select:'name'},select:'name code'}).populate({path:'academicYear',select:'name startYear endYear'}).populate({path: 'questions', select: 'text questionType options marks'})      
     if(exams.length === 0){
         return res.status(404).json({status:"fail",msg:"No Exams Found",exams})
     }

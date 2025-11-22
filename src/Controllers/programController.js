@@ -1,5 +1,6 @@
 const programModel = require('../../DB/Models/programModel')
 const asyncHandler = require('express-async-handler')
+const apiFeatures = require('../Utils/appFeatures')
 
 
 const createProgram = asyncHandler (async (req, res) => {
@@ -13,7 +14,18 @@ const createProgram = asyncHandler (async (req, res) => {
 })
 
 const getPrograms = asyncHandler (async (req, res) => {
-    const Programs = await programModel.find().populate({path :'createdBy',select:'username email'})   
+
+    const mongooseQuery = programModel.find()
+    const apiFeature = new apiFeatures (req.query, mongooseQuery)
+    .search('programModel')
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate()
+
+    const Programs = await apiFeature.mongooseQuery.populate({path :'createdBy',select:'username email'})
+    // const Programs = await programModel.find().populate({path :'createdBy',select:'username email'})
+
     if(Programs.length === 0){
         return res.status(404).json({status:"fail",msg:"No Programs Found",Programs})
     }

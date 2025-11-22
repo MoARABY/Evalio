@@ -1,5 +1,6 @@
 const subjectModel = require('../../DB/Models/subjectModel')
 const asyncHandler = require('express-async-handler')
+const apiFeatures = require('../Utils/appFeatures')
 
 
 
@@ -17,7 +18,16 @@ const createSubject = asyncHandler (async (req, res) => {
 })
 
 const getSubjects = asyncHandler (async (req, res) => {
-    const subjects = await subjectModel.find().populate({path:'academicTerm',select:'name year'}).populate({path:'createdBy',select:'username email'})
+    const mongooseQuery = subjectModel.find()
+    const features = new apiFeatures (req.query, mongooseQuery)
+    .search('subjectModel')
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate()
+    
+    const subjects = await features.mongooseQuery.populate({path:'academicTerm',select:'name year'}).populate({path:'createdBy',select:'username email'})
+    // const subjects = await subjectModel.find().populate({path:'academicTerm',select:'name year'}).populate({path:'createdBy',select:'username email'})
     if(subjects.length ===0){
         return res.status(404).json({ status: 'fail', message: 'No subjects found' })
     }

@@ -1,5 +1,6 @@
 const classLevelModel = require('../../DB/Models/classLevelModel')
 const asyncHandler = require('express-async-handler')
+const apiFeatures = require('../Utils/appFeatures')
 
 
 const createClassLevel = asyncHandler (async (req, res) => {
@@ -15,7 +16,16 @@ const createClassLevel = asyncHandler (async (req, res) => {
 })
 
 const getClassLevels = asyncHandler (async (req, res) => {
-    const classLevels = await classLevelModel.find().populate({path:'subjects',select:'name code'}).populate({path:'teachers',select:'username email'}).populate({path :'createdBy',select:'username email'})   
+    const mongooseQuery = classLevelModel.find()
+    const features = new apiFeatures(req.query, mongooseQuery)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate()
+    .search('classLevelModel')
+
+    const classLevels = await features.mongooseQuery.populate({path:'subjects',select:'name code'}).populate({path:'teachers',select:'username email'}).populate({path :'createdBy',select:'username email'})       
+    // const classLevels = await classLevelModel.find().populate({path:'subjects',select:'name code'}).populate({path:'teachers',select:'username email'}).populate({path :'createdBy',select:'username email'})   
     if(classLevels.length === 0){
         return res.status(404).json({status:"fail",msg:"No Class Levels Found",classLevels})
     }

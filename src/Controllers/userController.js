@@ -1,5 +1,6 @@
-const userModel = require('../../DB/Models/userModel');
-const asyncHandler = require('express-async-handler');
+const userModel = require('../../DB/Models/userModel')
+const asyncHandler = require('express-async-handler')
+const apiFeatures = require('../Utils/appFeatures')
 
 const createUser = asyncHandler(async (req, res) => {
     const user = await userModel.create(req.body);
@@ -8,7 +9,16 @@ const createUser = asyncHandler(async (req, res) => {
 })
 
 const getAllUsers = asyncHandler(async (req, res) => {
-    const users = await userModel.find();
+    const mongooseQuery = userModel.find()
+    const features = new apiFeatures(req.query, mongooseQuery)
+    .filter()
+    .sort()
+    .limitFields()
+    .search('UserModel')
+    .paginate()
+
+    const users = await features.mongooseQuery
+    // const users = await userModel.find();
     if(users.length === 0) {
         return res.status(404).json({ message: "No users found" });
     }

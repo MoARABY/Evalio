@@ -1,7 +1,7 @@
 
-const academicTermModel = require('../../DB/Models/academicTermModel');
-const asyncHandler = require('express-async-handler');
-
+const academicTermModel = require('../../DB/Models/academicTermModel')
+const asyncHandler = require('express-async-handler')
+const apiFeatures = require('../Utils/appFeatures')
 
 
 
@@ -23,7 +23,15 @@ const createAcademicTerm = asyncHandler (async (req, res) => {
 
 
 const getAcademicTerms = asyncHandler (async (req, res ) => {
-    const academicTerms = await academicTermModel.find().populate({ path: 'academicYear', select: 'name' });
+    const mongooseQuery = academicTermModel.find()
+    const apiFeature = new apiFeatures (req.query, mongooseQuery)
+    .search('academicTermModel')
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate()
+    const academicTerms = await apiFeature.mongooseQuery.populate({ path: 'academicYear', select: 'name' });
+    // const academicTerms = await academicTermModel.find().populate({ path: 'academicYear', select: 'name' });
     academicTerms.length > 0 ?res.status(200).json({ status: 'success', results: academicTerms.length, data: academicTerms }) : res.status(404).json({ status: 'fail', msg: 'No Academic Terms found' });
 
 })

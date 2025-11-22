@@ -1,6 +1,7 @@
 const questionModel = require('../../DB/Models/questionModel')
 const userModel = require('../../DB/Models/userModel')
 const asyncHandler = require('express-async-handler')
+const apiFeatures = require('../Utils/appFeatures')
 
 
 const createQuestion = asyncHandler (async (req, res) => {
@@ -22,7 +23,16 @@ const createQuestion = asyncHandler (async (req, res) => {
 })
 
 const getQuestions = asyncHandler (async (req, res) => {
-    const questions = await questionModel.find().populate({path :'createdBy',select:'username email'}).populate({path:'exam',select:'title',populate:{path:'subject',select:'name'} })
+    const mongooseQuery = questionModel.find()
+    const features = new apiFeatures(req.query, mongooseQuery)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate()
+    .search('questionModel')
+
+    const questions = await features.mongooseQuery.populate({path :'createdBy',select:'username email'}).populate({path:'exam',select:'title',populate:{path:'subject',select:'name'} })    
+    // const questions = await questionModel.find().populate({path :'createdBy',select:'username email'}).populate({path:'exam',select:'title',populate:{path:'subject',select:'name'} })
     if(questions.length === 0){
         return res.status(404).json({status:"fail",msg:"No Questions Found",questions})
     }

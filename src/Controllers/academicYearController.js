@@ -1,5 +1,6 @@
 const academicYearModel = require('../../DB/Models/academicYearModel');
-const asyncHandler = require('express-async-handler');
+const asyncHandler = require('express-async-handler')
+const apiFeatures = require('../Utils/appFeatures')
 
 
 
@@ -19,7 +20,15 @@ const createAcademicYear = asyncHandler (async (req, res) => {
 })
 
 const getAcademicYears = asyncHandler (async (req, res ) => {
-    const academicYears = await academicYearModel.find().populate({ path: 'academicYearAdmin', select: 'username email' });
+    const mongooseQuery = academicYearModel.find()
+    const apiFeature = new apiFeatures (req.query, mongooseQuery)
+    .search('academicYearModel')
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate()
+    const academicYears = await apiFeature.mongooseQuery.populate({ path: 'academicYearAdmin', select: 'username email' });
+    // const academicYears = await academicYearModel.find().populate({ path: 'academicYearAdmin', select: 'username email' });
     academicYears.length > 0 ?res.status(200).json({ status: 'success', results: academicYears.length, data: academicYears }) : res.status(404).json({ status: 'fail', msg: 'No Academic Years found' });
 
 })

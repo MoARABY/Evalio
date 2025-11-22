@@ -52,7 +52,7 @@ const updateExamResult = asyncHandler (async (req, res) => {
         return res.status(200).json({status:"success",msg:"exam Result Updated after remark",result})
     }
     return res.status(400).json({status:"fail",msg:"No remark request found for this exam result"})
-    })
+})
 
 const deleteExamResult = asyncHandler (async (req, res) => {
     const {id} = req.params
