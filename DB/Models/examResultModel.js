@@ -19,10 +19,18 @@ const examResultSchema = new mongoose.Schema({
     percentage: { type: Number, required: true },
     grade: { type: String },
     isPassed: { type: Boolean, required: true },
+    isPublished: {
+        type: Boolean,
+        default: false
+    },
     remarkRequested: { 
         type: Boolean, 
         default: false 
-    }
+    },
+    isRemarked: {
+        type: Boolean,
+        default: false
+    },
 }, { timestamps: true })
 
 module.exports = mongoose.model('ExamResult', examResultSchema)

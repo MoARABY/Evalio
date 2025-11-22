@@ -24,6 +24,7 @@ const programRoute = require('./src/Routes/programRoute')
 const examRoute = require('./src/Routes/examRoute')
 const questionRoute = require('./src/Routes/questionRoute')
 const examAttemptRoute = require('./src/Routes/examAttemptRoute')
+const examResultRoute = require('./src/Routes/examResultRoute')
 
 
 // Routes Mounting
@@ -37,6 +38,7 @@ app.use('/api/v1/programs', programRoute)
 app.use('/api/v1/exams', examRoute)
 app.use('/api/v1/questions', questionRoute)
 app.use('/api/v1/exam-attempts', examAttemptRoute)
+app.use('/api/v1/exam-results', examResultRoute)
 
 
 
