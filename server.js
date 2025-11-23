@@ -3,42 +3,47 @@ const app = express()
 require('dotenv').config()
 const morgan = require('morgan')
 const cookieParser = require('cookie-parser')
+const cors = require('cors')
+const helmet =  require('helmet')
+const hpp = require('hpp')
+const mongoSanitize = require('express-mongo-sanitize')
+const {xss} = require('express-xss-sanitizer')
 
 
-// Start using Middlewares
-app.use(express.json())
-app.use(cookieParser())
+// set request body size limit and parse data
+app.use(express.json({limit:'20kb'}))
 app.use(express.urlencoded({ extended: true }))
+
+// set security HTTP headers
+app.use(helmet())
+
+// enable CORS
+app.use(cors())
+
+// parse cookies
+app.use(cookieParser())
+
+// logging middleware
 app.use(morgan('dev'))
+
+// protect against xss attacks
+app.use(xss())
+
+// protect against nosql query injection
+// app.use(mongoSanitize())
+
+// protect against HTTP Parameter Pollution attacks
+app.use(hpp())
 
 // calling system routes
 const dbConnection = require('./DB/DBconfig')
 const errorMiddleware = require('./src/Middlewares/errorMiddleware')
-const userRoutes = require('./src/Routes/userRoutes')
-const authRoutes = require('./src/Routes/authRoute')
-const academicYearRoute = require('./src/Routes/academicYearRoute')
-const academicTermRoute = require('./src/Routes/academicTermRoute')
-const subjectRoute = require('./src/Routes/subjectRoute')
-const classLevelRoute = require('./src/Routes/classLevelRoute')
-const programRoute = require('./src/Routes/programRoute')
-const examRoute = require('./src/Routes/examRoute')
-const questionRoute = require('./src/Routes/questionRoute')
-const examAttemptRoute = require('./src/Routes/examAttemptRoute')
-const examResultRoute = require('./src/Routes/examResultRoute')
+const mountRoute = require('./src/Routes/mountRoute')
+
 
 
 // Routes Mounting
-app.use('/api/v1/users', userRoutes)
-app.use('/api/v1/auth', authRoutes)
-app.use('/api/v1/academic-years', academicYearRoute)
-app.use('/api/v1/academic-terms', academicTermRoute)
-app.use('/api/v1/subjects', subjectRoute)
-app.use('/api/v1/class-levels', classLevelRoute)
-app.use('/api/v1/programs', programRoute)
-app.use('/api/v1/exams', examRoute)
-app.use('/api/v1/questions', questionRoute)
-app.use('/api/v1/exam-attempts', examAttemptRoute)
-app.use('/api/v1/exam-results', examResultRoute)
+mountRoute(app)
 
 
 
