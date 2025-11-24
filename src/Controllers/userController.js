@@ -1,10 +1,12 @@
 const userModel = require('../../DB/Models/userModel')
 const asyncHandler = require('express-async-handler')
 const apiFeatures = require('../Utils/appFeatures')
+const {client} = require('../../DB/redisConfig')
 
 const createUser = asyncHandler(async (req, res) => {
-    const user = await userModel.create(req.body);
-    const {password, ...rest} = user._doc;
+    const user = await userModel.create(req.body)
+    const {password, ...rest} = user._doc
+    await client.del('users')
     user ? res.status(201).json({ message: "User created successfully", body:rest }) : res.status(400).json({ message: "User creation failed" });
 })
 
@@ -22,13 +24,16 @@ const getAllUsers = asyncHandler(async (req, res) => {
     if(users.length === 0) {
         return res.status(404).json({ message: "No users found" });
     }
+    if(res.locals.cacheKey) {
+        await client.setEx(res.locals.cacheKey, 3600, JSON.stringify(users))
+    }
     res.json({ message: "users list", users: users });
 })
 
 const getUserById = asyncHandler(async (req, res) => {
     const {id} = req.params;
-    const user = await userModel.findById(id);
-    const {password, ...rest} = user._doc;
+    const user = await userModel.findById(id)
+    const {password, ...rest} = user._doc
     res.status(200).json({ message: "user",rest })
 })
 

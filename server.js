@@ -37,6 +37,7 @@ app.use(hpp())
 
 // calling system routes
 const dbConnection = require('./DB/DBconfig')
+const {redisConnection} = require('./DB/redisConfig')
 const errorMiddleware = require('./src/Middlewares/errorMiddleware')
 const mountRoute = require('./src/Routes/mountRoute')
 
@@ -71,6 +72,7 @@ const PORT  = process.env.PORT || 3000
 const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
     dbConnection()
+    redisConnection()
 })
 
 
