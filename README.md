@@ -76,38 +76,6 @@ Server runs by default on the port from `process.env.PORT` (fallback `3000`) and
 
 ---
 
-Environment variables
-Create a `.env` file at the project root with the variables below. Example:
-
-```text
-# Server
-PORT=3000
-NODE_ENV=development
-
-# MongoDB
-DB_STRING=mongodb://root:example@localhost:27017/evalio?authSource=admin
-
-# Redis
-REDIS_PORT=redis://127.0.0.1:6379
-
-# JWT
-JWT_SECRET=your_jwt_secret_here
-JWT_EXPIRES_IN=7d
-
-# Email (for password reset)
-EMAIL_HOST=smtp.example.com
-EMAIL_PORT=587
-EMAIL_USER=your@email.com
-EMAIL_PASS=your-email-password
-```
-
-- Notes:
-  - `DB_STRING` is used by `DB/DBconfig.js`.
-  - `REDIS_PORT` is used by `DB/redisConfig.js` to create the Redis client — it can be a URL (e.g. `redis://host:6379`).
-  - `JWT_SECRET` and `JWT_EXPIRES_IN` are used for authentication tokens.
-
----
-
 Docker
 The project includes a `Dockerfile` and `docker-compose.yml` configured to run the app with MongoDB and Redis.
 
