@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    env_file:
+      - ./.env
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+    depends_on:
+      - mongo
+      - redis
+    restart: unless-stopped
+    networks:
+      - app-net
+
+  mongo:
+    image: mongo:6.0
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"   # للوصول من الخارج (Compass)
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - app-net
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - app-net
+
+volumes:
+  mongo-data:
+  redis-data:
+
+networks:
+  app-net:
