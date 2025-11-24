@@ -19,6 +19,7 @@ app.use(helmet())
 
 // enable CORS
 app.use(cors())
+// app.options('*',cors())
 
 // parse cookies
 app.use(cookieParser())
@@ -46,6 +47,10 @@ const mountRoute = require('./src/Routes/mountRoute')
 // Routes Mounting
 mountRoute(app)
 
+// Swagger Documentation
+const swaggerSetup = require('./swagger')
+swaggerSetup(app)
+
 
 
 // Testing Route
@@ -72,7 +77,7 @@ const PORT  = process.env.PORT || 3000
 const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
     dbConnection()
-    redisConnection()
+    // redisConnection()
 })
 
 
